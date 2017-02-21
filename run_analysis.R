@@ -65,16 +65,15 @@
 # 5 From the data set in step 4, create a second, independent tidy data set with the average 
 # of each variable for each activity and each subject.
   
-    split_set <- split(main_set, list(factor(main_set$subject.id), factor(main_set$activity)))
-                     
-    set_of_averages <- sapply(split_set, function(x) {
-     colMeans(x[, c(3:ncol(x))])
-     })
+  grouped_set <- group_by(main_set, subject.id, activity)
+  set_of_averages <- summarise_each(grouped_set, funs(mean))
   
   
-# now we save datasets to csv files
-    dir.create(file.path("res_dataset"), showWarnings = FALSE)
-    
-    write.csv(main_set, file = file.path("res_dataset","std_mean_all.csv"),row.names=FALSE, col.names = TRUE)
-    write.csv(set_of_averages, file = file.path("res_dataset","averages_std_mean.csv"),row.names=TRUE)
-    
+  # now we save datasets to files
+  dir.create(file.path("res_dataset"), showWarnings = FALSE)
+  
+  write.csv(main_set, file = file.path("res_dataset","std_mean_all.csv"),row.names=FALSE, col.names = TRUE)
+  write.csv(set_of_averages, file = file.path("res_dataset","averages_std_mean.csv"),row.names=TRUE)
+  
+  write.table(set_of_averages, file = file.path("res_dataset","averages_std_mean.txt"), row.names=FALSE)
+  
